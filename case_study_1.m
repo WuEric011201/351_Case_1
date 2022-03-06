@@ -1,15 +1,22 @@
 %% Frequency separation
 % load the audio
-load handel.mat; 
+[oldy, oldFs] = audioread("blue.wav");
+% remove sound too quiet
+idx = find(any(abs(oldy) > 0.001, 2), 1); 
+oldy(1:idx-1,:) = [];
+
+% Increase the sampling frequency
+f = 120000;  
+[P,Q] = rat(f/oldFs);
+y = resample(y,P,Q);
 
 % First Frequency separation
 R = 50; % the resistance
 C = 5e-6; % the capacitance
 tau = R*C; % 1/RC = 4000
-f = Fs*20;  % Fs is the loaded frequency of music
 
 input1 = y; % y is the loaded signal of music
-output1 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input1); % low pass
+output1 = filter((1/f)/tau,[1 ,(((1/f)/tau)-1)],input1); % low pass
 for n = 1:10 % ten RC in series 
     output1 = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output1));
 end
@@ -72,19 +79,19 @@ output5 = output5.*800;
 
 %% Test listening section
 sound(output1, f);
-    pause(5);
-        clear sound;
+    pause(6);
+        clear sound; 
 sound(output2, f);
-    pause(5);
+    pause(6);
         clear sound;
 sound(output3, f);
-    pause(5);
+    pause(6);
         clear sound;
 sound(output4, f);
-    pause(5);
+    pause(6);
         clear sound;
 sound(output5, f);
-    pause(5);
+    pause(6);
         clear sound;
 %% First Frequency Magnitude Graph
 
@@ -170,7 +177,7 @@ w_range = 2.*pi.*range; % define a range of angular frequencies
 
 time = 0:1/f:50*tau; % define the time vector
 for t = 1:100
-    input11 = exp(i.*w_range(t).*time); % output vector
+    input11 = exp(1i.*w_range(t).*time); % output vector
     output1 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input11);
     for n = 1:10
         output1 = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output1));
