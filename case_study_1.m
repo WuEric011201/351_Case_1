@@ -5,23 +5,23 @@ load handel.mat;
 % First Frequency separation
 R = 50; % the resistance
 C = 5e-6; % the capacitance
-tau = R*C;
+tau = R*C; % 1/RC = 4000
 f = Fs;  % Fs is the loaded frequency of music
 
 input1 = y; % y is the loaded signal of music
-output1 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input1);
-for n = 1:10
+output1 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input1); % low pass
+for n = 1:10 % ten RC in series 
     output1 = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output1));
 end
 
 % Second frequency separation
 R = 65; % the resistance
 C = 5e-6; % the capacitance
-tau = R*C;
+tau = R*C; % 1/RC = 3077
 
 input2 = y;
 output2 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input2); %low pass
-output2 = filter([1,-1],[1,(((1/f)/tau)-1)],output2);
+output2 = filter([1,-1],[1,(((1/f)/tau)-1)],output2); % high pass
 for n = 1:10
     output2 = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output2));
     output2 = filter([1,-1],[1,(((1/f)/tau)-1)],output2);
@@ -31,11 +31,11 @@ output2 = output2.*1000; %adjust the magnitude
 % Third frequency separation
 R = 50; % the resistance
 C = 3e-6; % the capacitance
-tau = R*C;
+tau = R*C; % 1/RC = 6667
 
 input3 = y;
 output3 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input3); %low pass
-output3 = filter([1,-1],[1,(((1/f)/tau)-1)],output3);
+output3 = filter([1,-1],[1,(((1/f)/tau)-1)],output3); % high pass
 for n = 1:10
     output3 = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output3));
     output3 = filter([1,-1],[1,(((1/f)/tau)-1)],output3);
@@ -46,7 +46,7 @@ output3 = output3.*1000;
 % Fourth frequency separation
 R = 30; % the resistance
 C = 2e-6; % the capacitance
-tau = R*C;
+tau = R*C; % 1/RC = 16667
 
 input4 = y;
 output4 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input4); %low pass
@@ -61,27 +61,44 @@ output4 = output4.*800;
 % Fifth Frequency Separation
 R = 60; % the resistance
 C = 7.5e-7; % the capacitance
-tau = R*C;
+tau = R*C; %1/RC = 22222
 
 input5 = y;
 output5 = filter([1,-1],[1,(((1/f)/tau)-1)],input5);
 for n = 1:10
     output5 = filter([1,-1],[1,(((1/f)/tau)-1)],output5);
 end
+output5 = output5.*800;
 
+%% Test listening section
+sound(output1, Fs);
+    pause(5);
+        clear sound;
+sound(output2, Fs);
+    pause(5);
+        clear sound;
+sound(output3, Fs);
+    pause(5);
+        clear sound;
+sound(output4, Fs);
+    pause(5);
+        clear sound;
+sound(output5, Fs);
+    pause(5);
+        clear sound;
 %% First Frequency Magnitude Graph
 
 R = 50; % the resistance
-C = 5e-6; % the capacitance
+C = 5e-6; % the capacitan1ce
 tau = R*C;
 f = 44100;
 
 range = logspace (0.1,4,100); % define a range of frequencies
 w_range = 2.*pi.*range; % define a range of angular frequencies
 
-time = 0:1/f:50*tau; % define the time vector
-for t = 1:100
-    input11 = exp(i.*w_range(t).*time); % output vector
+time = 0:1/f:50*3*tau; % define the time vector
+for t = 1:100 
+    input11 = exp(1i.*w_range(t).*time); % output vector
     output1 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input11);
     for n = 1:5
         output1 = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output1));
