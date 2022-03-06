@@ -6,7 +6,7 @@ load handel.mat;
 R = 50; % the resistance
 C = 5e-6; % the capacitance
 tau = R*C; % 1/RC = 4000
-f = Fs;  % Fs is the loaded frequency of music
+f = Fs*20;  % Fs is the loaded frequency of music
 
 input1 = y; % y is the loaded signal of music
 output1 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input1); % low pass
@@ -71,19 +71,19 @@ end
 output5 = output5.*800;
 
 %% Test listening section
-sound(output1, Fs);
+sound(output1, f);
     pause(5);
         clear sound;
-sound(output2, Fs);
+sound(output2, f);
     pause(5);
         clear sound;
-sound(output3, Fs);
+sound(output3, f);
     pause(5);
         clear sound;
-sound(output4, Fs);
+sound(output4, f);
     pause(5);
         clear sound;
-sound(output5, Fs);
+sound(output5, f);
     pause(5);
         clear sound;
 %% First Frequency Magnitude Graph
