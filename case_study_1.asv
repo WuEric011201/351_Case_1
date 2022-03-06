@@ -1,14 +1,14 @@
 %% Frequency separation
 % load the audio
-[oldy, oldFs] = audioread("blue.wav");
+[oldy, oldFs] = audioread("Giant Steps Bass Cut.wav");
 % remove sound too quiet
 idx = find(any(abs(oldy) > 0.001, 2), 1); 
 oldy(1:idx-1,:) = [];
 
 % Increase the sampling frequency
-f = 200000;  
+f = 150000;  % -------can change here. The higher the better, but has a limit
 [P,Q] = rat(f/oldFs);
-y = resample(y,P,Q);
+y = resample(oldy,P,Q);
 
 % First Frequency separation
 R = 50; % the resistance
@@ -80,7 +80,7 @@ output5 = output5.*800;
 %% Test listening section
 sound(output1, f);
     pause(6);
-        clear sound; 
+        clear sound;
 sound(output2, f);
     pause(6);
         clear sound;

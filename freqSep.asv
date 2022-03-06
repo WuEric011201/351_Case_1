@@ -12,13 +12,18 @@
 % returned value:
 % output: filtered ouput with given frequency
 
-function output = freqSep(input, r, c, order, magnitude, fs, type)
+function output = freqSep(input, r, c, order, mag, fs, type)
+    
+%     % capacitance and resistance used for different frequencies
+%     c = [5e-6, 5e-6, 3e-6, 2e-6, 7.5e-7];    
+%     r = [50, 65, 50, 30, 60];
     
     tau = r*c; % time constant
     
     % coefficients for filter()
     aLow = [1, ((1/fs)/tau)-1]; bLow = (1/fs)/tau; % low-pass coeff
     aHigh = [1, ((1/fs)/tau)-1]; bHigh = [1, -1]; % high-pass coeff
+   
     
     % filter the input order of times
     for i = 1: order 
@@ -34,7 +39,7 @@ function output = freqSep(input, r, c, order, magnitude, fs, type)
 
         if (strcmp(type, 'lh') == 1)
             % pass the high-pass 
-            input = filter(bHigh, aHigh, input);
+            temp = filter(bHigh, aHigh, input);
         end
 
     end
