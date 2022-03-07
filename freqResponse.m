@@ -13,22 +13,21 @@
 % H: a 1*100 complex double array, with corresponding frequency produced
 % by logspace(1,5,100);
 
-function H = freqResponse(idx, r, c, order, freq)
+function H = freqResponse(idx, rl, cl, rh, ch, order, freq, fs)
     
-    fs = 44.1e4; % sample frequency
-    dt = 1/fs;
-    tau = r*c; % time constant
+    taul = rl*cl; % time constant
+    tauh = rh*ch;
     
     % coefficients for filter()
-    aLow = [1, ((1/fs)/tau)-1]; bLow = (1/fs)/tau; % low-pass coeff
-    aHigh = [1, ((1/fs)/tau)-1]; bHigh = [1, -1]; % high-pass coeff
+    aLow = [1, ((1/fs)/taul)-1]; bLow = (1/fs)/taul; % low-pass coeff
+    aHigh = [1, ((1/fs)/tauh)-1]; bHigh = [1, -1]; % high-pass coeff
 
     % define a range of freqency the bode plot wants to cover
     w = 2*pi.*freq;
     H = zeros(1,length(freq));
 
     for i = 1:length(freq)
-        t = 0:dt:30/freq(i); % time interval
+        t = 0 : 1/fs : 30/freq(i); % time interval
         freq_in = exp(1j*w(i).*t); % generate the input
         
         temp = freq_in;

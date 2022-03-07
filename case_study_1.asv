@@ -3,31 +3,56 @@
 % Process"Giant Steps"
 
 % Set up the parameters
-c_gs = [5e-6, 5e-6, 3e-6, 2e-6, 7.5e-7];    
-r_gs = [50, 65, 50, 30, 60];
+c_gsl = [5e-6, 5e-6, 3e-6, 2e-6, 7.5e-7];    
+r_gsl = [50, 65, 50, 30, 60];
 order = [11, 11, 11, 11, 11];
-magnitude  = [20, 800, 800, 800, 5];
+magnitude  = [20, 1000, 800, 800, 4];
 type = ['l', 'x', 'x' , 'x', 'h'];
 % 1/RC = 4000, 3077, 6667, 16667, 22222
-[output1_gs, new_fs_gs] = freqSep("Giant Steps Bass Cut.wav", r_gs, c_gs, order, magnitude, type); 
+[output1_gs, new_fs_gs] = freqSep("Giant Steps Bass Cut.wav", r_gsl, c_gsl, r_gsl, c_gsl, order, magnitude, type); 
 
 
 % Process "Space Station"
 
 % Set up the parameters
-c = [5e-6, 5e-6, 3e-6, 2e-6, 7.5e-7];    
-r = [50, 65, 50, 30, 60];
+c_ss = [5e-6, 5e-6, 3e-6, 2e-6, 7.5e-7];    
+r_ss = [50, 65, 50, 30, 60];
 order = [11, 11, 11, 11, 11];
-magnitude  = [2, 800, 800, 800, 60];
+magnitude  = [0.9, 700, 800, 800, 10];
 type =  ['l', 'x', 'x' , 'x', 'h'];
 % 1/RC = 4000, 3077, 6667, 16667, 22222
-[output1_ss, new_fs_ss] = freqSep("Space Station - Treble Cut.wav", r, c, order, magnitude,  type); 
+[output1_ss, new_fs_ss] = freqSep("Space Station - Treble Cut.wav", r_ss, c_ss, r_ss, c_ss, order, magnitude,  type); 
 
 sound(output1_gs, new_fs_gs);
-    pause(6);
+    pause(5);
         clear sound;
 sound(output1_ss, new_fs_ss);
-    pause(6);
+    pause(5);
+        clear sound;
+
+
+
+  %% Task 2 Clear the siren in “Blue in Green” by Miles Davis
+% Set up the parameters
+%  high cut / low pass at 2.2 kHz for filtering second and later harmonics of the
+%  siren 
+
+c_bgl = [7.58E-6];    
+r_bgl = [60];
+order = [11];
+magnitude  = [2];
+type = ['l'];
+[output1_bg, new_fs_bg] = freqSep('Blue in Green with Siren.wav', r_bgl, c_bgl, r_bgl, c_bgl, order, magnitude, type); 
+
+% bandpass from 0 - 0.75  and 1.64 - 2.2 kHz for filtering the first harmonics of the siren
+c_bgl = [7.58E-6];    
+r_bgl = [60];
+order = [11];
+magnitude  = [2];
+type = ['l'];
+[output1_bg, new_fs_bg] = freqSep('Blue in Green with Siren.wav', r_bgl, c_bgl, r_bgl, c_bgl, order, magnitude, type); 
+sound(output1_bg, new_fs_bg);
+    pause(5);
         clear sound;
 
 

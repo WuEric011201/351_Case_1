@@ -3,17 +3,18 @@
 % parameters:
 % input: a string representing the name of the sound file 
 % order: the number of times the RC circuits are in series (1 by n array)
-% r, c are 1 by n array of R and C values; n is the number of filters
+% rl, cl are 1 by n array of R and C values; n is the number of low pass filters
+% rh, ch are 1 by n array of R and C values; n is the number of high pass filters
 % magnitude: the number of times the filtered results will be amplified (1 by n array)
 % fs: sample frequency for filter
-% type: low: means only passes through low;  (1 by n array)
-%  high: means only passes through high
-%  lh: means passes through low and high
+% type: l: means only passes through low;  (1 by n array)
+%  h: means only passes through high
+%  x: means passes through low and high
 % 
 % returned value:
 % output: filtered ouput with given frequency
 
-function [output,new_fs]  = freqSep(input, r, c, order, magnitude, type)
+function [output,new_fs]  = freqSep(input, rl, cl, rh, ch, order, magnitude, type)
 
 [input_audio, input_Fs] = audioread(input);
 
@@ -25,46 +26,22 @@ input_audio = prepocess(input_audio, 0.0005, input_Fs, new_fs);    % a function 
 % initialize the return matrix
 output = zeros(size(input_audio, 1), size(input_audio, 2)); 
 
-% Check size
-if size(r, 2) ~= size(c, 2)
-    error("dimension of r and c wrong");
-end
-
 % filter the audio size of r times
-    for j = 1: size(r, 2)
-        tau = r(1, j)* c(1, j); % time constant
+    for j = 1: size(rl, 2)
+        taul = rl(1, j)* cl(1, j); % time constant
+        tauh = rh(1, j)* ch(1, j);
         temp = input_audio; 
         % coefficients for filter()
-        aLow = [1, ((1/new_fs)/tau)-1]; bLow = (1/new_fs)/tau; % low-pass coeff  %??
-        aHigh = [1, ((1/new_fs)/tau)-1]; bHigh = [1, -1]; % high-pass coeff
+        aLow = [1, ((1/new_fs)/taul)-1]; bLow = (1/new_fs)/taul; % low-pass coeff  %??
+        aHigh = [1, ((1/new_fs)/tauh)-1]; bHigh = [1, -1]; % high-pass coeff
         
-        % filter the input order of times
-        for i = 1: order(j)
-    
-            if (strcmp(type(j), 'low') ==1 )
-                    % pass the low-pass 
-                    temp = filter(bLow, aLow, temp);
-                continue; 
-            end
-    
-            % pass the high pass
-            temp = filter(bHigh, aHigh, temp);
-    
-            if (strcmp(type(j), 'lh') == 1)
-                % pass the low-pass 
-                temp = filter(bLow, aLow,  temp);
-            end
-    
-        end
-        
+        temp = filter_with_order(temp, aLow, bLow, aHigh, bHigh, order(j), type); 
+     
         temp = magnitude(j) .* temp; % time the magnitude
         output = output + temp;  % sum the result of each filter 
 
         sound(temp, new_fs);
-        pause(3);
-        clear sound;
-        sound(temp, new_fs);
-        pause(3);
+        pause(2);
         clear sound;
 
     end
