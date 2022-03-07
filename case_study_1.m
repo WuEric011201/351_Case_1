@@ -1,94 +1,36 @@
-%% Frequency separation
-% load the audio
-[oldy, oldFs] = audioread("Giant Steps Bass Cut.wav");
-% remove sound too quiet
-idx = find(any(abs(oldy) > 0.001, 2), 1); 
-oldy(1:idx-1,:) = [];
+%% Task 1 - process "Giant Steps" by John Coltrane and "Space Station" by Art Farmer
 
-% Increase the sampling frequency
-f = 150000;  % -------can change here. The higher the better, but has a limit
-[P,Q] = rat(f/oldFs);
-y = resample(oldy,P,Q);
+% Process"Giant Steps"
 
-% First Frequency separation
-R = 50; % the resistance
-C = 5e-6; % the capacitance
-tau = R*C; % 1/RC = 4000
-
- output1 = freqSep(y, R, C, 11, 30, f, 'low'); 
-
-% Second frequency separation
-R = 65; % the resistance
-C = 5e-6; % the capacitance
-tau = R*C; % 1/RC = 3077
-
-input2 = y;
-output2 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input2); %low pass
-output2 = filter([1,-1],[1,(((1/f)/tau)-1)],output2); % high pass
-for n = 1:10
-    output2 = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output2));
-    output2 = filter([1,-1],[1,(((1/f)/tau)-1)],output2);
-end
-output2 = output2.*1000; %adjust the magnitude
-
-% Third frequency separation
-R = 50; % the resistance
-C = 3e-6; % the capacitance
-tau = R*C; % 1/RC = 6667
-
-input3 = y;
-output3 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input3); %low pass
-output3 = filter([1,-1],[1,(((1/f)/tau)-1)],output3); % high pass
-for n = 1:10
-    output3 = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output3));
-    output3 = filter([1,-1],[1,(((1/f)/tau)-1)],output3);
-end
-output3 = output3.*1000;
+% Set up the parameters
+c_gs = [5e-6, 5e-6, 3e-6, 2e-6, 7.5e-7];    
+r_gs = [50, 65, 50, 30, 60];
+order = [11, 11, 11, 11, 11];
+magnitude  = [20, 800, 800, 800, 5];
+type = ['l', 'x', 'x' , 'x', 'h'];
+% 1/RC = 4000, 3077, 6667, 16667, 22222
+[output1_gs, new_fs_gs] = freqSep("Giant Steps Bass Cut.wav", r_gs, c_gs, order, magnitude, type); 
 
 
-% Fourth frequency separation
-R = 30; % the resistance
-C = 2e-6; % the capacitance
-tau = R*C; % 1/RC = 16667
+% Process "Space Station"
 
-input4 = y;
-output4 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input4); %low pass
-output4 = filter([1,-1],[1,(((1/f)/tau)-1)],output4);
-for n = 1:10
-    output4 = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output4));
-    output4 = filter([1,-1],[1,(((1/f)/tau)-1)],output4);
-end
-output4 = output4.*800;
+% Set up the parameters
+c = [5e-6, 5e-6, 3e-6, 2e-6, 7.5e-7];    
+r = [50, 65, 50, 30, 60];
+order = [11, 11, 11, 11, 11];
+magnitude  = [1, 800, 800, 800, 30];
+type =  ['l', 'x', 'x' , 'x', 'h'];
+% 1/RC = 4000, 3077, 6667, 16667, 22222
+[output1_ss, new_fs_ss] = freqSep("Space Station - Treble Cut.wav", r, c, order, magnitude,  type); 
 
-
-% Fifth Frequency Separation
-R = 60; % the resistance
-C = 7.5e-7; % the capacitance
-tau = R*C; %1/RC = 22222
-
-input5 = y;
-output5 = filter([1,-1],[1,(((1/f)/tau)-1)],input5);
-for n = 1:10
-    output5 = filter([1,-1],[1,(((1/f)/tau)-1)],output5);
-end
-output5 = output5.*800;
-
-%% Test listening section
-sound(output1, f);
+sound(output1_gs, new_fs_gs);
     pause(6);
         clear sound;
-sound(output2, f);
+sound(output1_ss, new_fs_ss);
     pause(6);
         clear sound;
-sound(output3, f);
-    pause(6);
-        clear sound;
-sound(output4, f);
-    pause(6);
-        clear sound;
-sound(output5, f);
-    pause(6);
-        clear sound;
+
+
 %% First Frequency Magnitude Graph
 
 R = 50; % the resistance
@@ -102,11 +44,11 @@ w_range = 2.*pi.*range; % define a range of angular frequencies
 time = 0:1/f:50*3*tau; % define the time vector
 for t = 1:100 
     input11 = exp(1i.*w_range(t).*time); % output vector
-    output1 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input11);
+    output1_gs = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input11);
     for n = 1:5
-        output1 = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output1));
+        output1_gs = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output1_gs));
     end
-    H(t) = output1(end)./input11(end);  % at the steady state
+    H(t) = output1_gs(end)./input11(end);  % at the steady state
 end
 
 magnitude = abs(H);
@@ -138,12 +80,12 @@ w_range = 2.*pi.*range; % define a range of angular frequencies
 time = 0:1/f:50*tau; % define the time vector
 for t = 1:100
     input11 = exp(i.*w_range(t).*time); % output vector
-    output1 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input11);
+    output1_gs = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input11);
     for n = 1:10
-        output1 = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output1));
-        output1 = filter([1,-1],[1,(((1/f)/tau)-1)],output1);
+        output1_gs = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output1_gs));
+        output1_gs = filter([1,-1],[1,(((1/f)/tau)-1)],output1_gs);
     end
-    H(t) = output1(end)./input11(end);  % at the steady state
+    H(t) = output1_gs(end)./input11(end);  % at the steady state
 end
 
 magnitude = (abs(H));
@@ -174,12 +116,12 @@ w_range = 2.*pi.*range; % define a range of angular frequencies
 time = 0:1/f:50*tau; % define the time vector
 for t = 1:100
     input11 = exp(1i.*w_range(t).*time); % output vector
-    output1 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input11);
+    output1_gs = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input11);
     for n = 1:10
-        output1 = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output1));
-        output1 = filter([1,-1],[1,(((1/f)/tau)-1)],output1);
+        output1_gs = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output1_gs));
+        output1_gs = filter([1,-1],[1,(((1/f)/tau)-1)],output1_gs);
     end
-    H(t) = output1(end)./input11(end);  % at the steady state
+    H(t) = output1_gs(end)./input11(end);  % at the steady state
 end
 
 magnitude = abs(H);
@@ -211,12 +153,12 @@ w_range = 2.*pi.*range; % define a range of angular frequencies
 time = 0:1/f:50*tau; % define the time vector
 for t = 1:100
     input11 = exp(i.*w_range(t).*time); % output vector
-    output1 = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input11);
+    output1_gs = filter((1/f)/tau,[1,(((1/f)/tau)-1)],input11);
     for n = 1:10
-        output1 = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output1));
-        output1 = filter([1,-1],[1,(((1/f)/tau)-1)],output1);
+        output1_gs = (filter((1/f)/tau,[1,(((1/f)/tau)-1)],output1_gs));
+        output1_gs = filter([1,-1],[1,(((1/f)/tau)-1)],output1_gs);
     end
-    H(t) = output1(end)./input11(end);  % at the steady state
+    H(t) = output1_gs(end)./input11(end);  % at the steady state
 end
 
 magnitude = (abs(H));
@@ -250,11 +192,11 @@ w_range = 2.*pi.*range; % define a range of angular frequencies
 time = 0:1/f:50*tau; % define the time vector
 for t = 1:10
     input11 = exp(i.*w_range(t).*time); % output vector
-    output1 = filter([1,-1],[1,(((1/f)/tau)-1)],input11);
+    output1_gs = filter([1,-1],[1,(((1/f)/tau)-1)],input11);
     for n = 1:10
-        output1 = filter([1,-1],[1,(((1/f)/tau)-1)],output1);
+        output1_gs = filter([1,-1],[1,(((1/f)/tau)-1)],output1_gs);
     end
-    H(t) = output1(end)./input11(end);  % at the steady state
+    H(t) = output1_gs(end)./input11(end);  % at the steady state
 end
 
 magnitude = abs(H);
