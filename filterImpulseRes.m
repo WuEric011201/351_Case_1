@@ -1,6 +1,8 @@
 % this function plots and returns impulse response of the filters in a
 % given frequency seperator
 % 
+% function used: lsim_with_order()
+% 
 % parameter: 
 % rl, rh: resistance of the filter (high and low)
 % cl, ch: capacitance of the filter (high and low)
@@ -27,9 +29,9 @@ function output = filterImpulseRes(rl, cl, rh, ch, order, type, t)
         taul = rl(i)*cl(i); % time constant
         tauh = rh(i)*ch(i);
 
-        % coefficients for filter()
-        aLow = [1, 1/taul]; bLow = [1 0]; % low-pass coeff
-        aHigh = [1 1/tauh]; bHigh = 1/tauh; % high-pass coeff
+        % coefficients for lsim()
+        aLow = [1, 1/tauh]; bLow = 1/tauh; % low-pass coeff
+        aHigh = [1, 1/taul]; bHigh = [1 0]; % high-pass coeff
                 
         % pass the filter for given times
         output(i,:) = lsim_with_order(input, aLow, bLow, aHigh, bHigh, order(i), type(i), t);
