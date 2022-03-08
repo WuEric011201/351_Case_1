@@ -1,11 +1,14 @@
-% This function does the actual filtering
+% This function does the actual filtering using filter()
+% 
 % parameter: 
 % signal: signal we want to filter
 % aLow, bLow, aHigh, bHigh: parameters of filter
 % order: number of the filters in series
-% type: type of filter (low, high, band)
+% type: l: means only passes through low;  (1 by n array)
+%       h: means only passes through high
+%       x: means passes through low and high
+% 
 % returned value: filtered signal
-
 
 function signal = filter_with_order(signal, aLow, bLow, aHigh, bHigh, order, type)
 
