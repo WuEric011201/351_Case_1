@@ -28,7 +28,7 @@ function [output,new_fs]  = freqSep(input, rl, cl, rh, ch, order, magnitude, typ
     % initialize the return matrix
     output = zeros(size(input_audio, 1), size(input_audio, 2)); 
 
-    freq = logspace(1,5,60); 
+    freq = logspace(1,5, 60); 
 %     Result of freq response
     H = zeros(size(rl, 2), length(freq)); 
 

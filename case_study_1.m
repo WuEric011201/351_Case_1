@@ -1,45 +1,50 @@
 %% Task 1 - process "Giant Steps" by John Coltrane and "Space Station" by Art Farmer
 
 % Set up the parameters
-c_l = [1.567E-5, 5.63e-6,  2.142e-6,  7.055e-7, 3.655e-6];    
+c_l = [3.42E-6, 1.759E-6,  1.31e-6,  5.41e-7, 5.31e-7];    
 r_l = [60, 60, 60, 60, 60];
-c_h = [1.667E-4, 1.667E-4, 4.63e-5, 1.142e-5, 3.655e-6];    
+c_h = [3.32E-6, 3.22E-6, 1.559E-6,  1.11e-6, 5.41e-7];    
 r_h = [60, 60, 60, 60, 60];
 
-order = [11, 11, 11, 10, 10];
-magnitude_unity  = [1 0.8 1.4 1.43 0.78 ];
-magnitude_base_boost = [4 3 1.4 1.43 0.78 ];
-magnitude_treble_boost = [1 0.8 1.4 3 2.5 ];
+order = [10, 10, 10, 10, 10];
+
+magnitude_unity  = [1 50 200 20 1/6];
+% magnitude_unity  = [0 0 0 1 0];
+magnitude_base_boost = [1 6.5 1.27 9.17 1];
+magnitude_treble_boost = [1 6.5 1.27 9.17 1];
 type = ['l', 'x', 'x' , 'x', 'h'];
 
 
 % Process"Giant Steps"
 
-% [output1_gs, new_fs_gs] = freqSep("Giant Steps Bass Cut.wav", r_l, c_l, r_h, c_h, order, magnitude_base_boost, type); 
+[output1_gs, new_fs_gs] = freqSep("Giant Steps Bass Cut.wav", r_l, c_l, r_h, c_h, order, magnitude_unity, type); 
 
 % Process "Space Station"
 
 % [output1_ss, new_fs_ss] = freqSep("Space Station - Treble Cut.wav", r_l, c_l, r_h, c_h, order, magnitude_unity,  type); 
 
 
-% Process "Blue in Green"
-magnitude_eliminate_siren= [1 0.2 0.5 0.5 0.2 ];
-[output1_bg, new_fs_bg] = freqSep("Blue in Green with Siren.wav", r_l, c_l, r_h, c_h, order, magnitude_eliminate_siren,  type); 
-
-
-% sound(output1_gs, new_fs_gs);
-%     pause(5);
-%         clear sound;
+sound(output1_gs, new_fs_gs);
+    pause(5);
+        clear sound;
 % sound(output1_ss, new_fs_ss);
 %     pause(5);
 %         clear sound;
+
+
+
+
+  %% Task 2 Clear the siren in "Blue in Green" by Miles Davis First Trial
+
+% Process "Blue in Green"
+magnitude_eliminate_siren= [1 0 1.27 0 1];
+[output1_bg, new_fs_bg] = freqSep("Blue in Green with Siren.wav", r_l, c_l, r_h, c_h, order, magnitude_eliminate_siren,  type); 
+
 sound(output1_bg, new_fs_bg);
     pause(5);
         clear sound;
 
-
-
-  %% Task 2 Clear the siren in “Blue in Green” by Miles Davis
+%% Task 2  Second Trial
 % Set up the parameters
 %  high cut / low pass at 2.2 kHz for filtering second and later harmonics of the
 %  siren 

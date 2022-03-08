@@ -25,7 +25,7 @@ function H = filterFreqRes(  aLow,  bLow, aHigh ,bHigh , order, type, fs, freq, 
 
 for f = 1:length(freq)
             
-    t = 0 : 1/fs : 30/freq(f); % time interval
+            t = 0 : 1/fs : 30/freq(f); % time interval
             freq_in = exp(1j*w(f).*t); % generate the input
             
             % frequency output
