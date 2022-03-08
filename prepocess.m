@@ -15,9 +15,10 @@
 
 
 function output = prepocess(input, threshold, old_fs, new_fs)
+
     % remove sound too quiet in the beginning 
-idx = find(any(abs(input) > threshold, 2), 1);
-input(1:idx-1,:) = [];
+    idx = find(any(abs(input) > threshold, 2), 1);
+    input(1:idx-1,:) = [];
     
     [P,Q] = rat(new_fs/old_fs);
     input = resample(input,P,Q);

@@ -22,11 +22,15 @@ function [output,new_fs]  = freqSep(input, rl, cl, rh, ch, order, magnitude, typ
 
     %  sampling frequency (last parameter) -------  can change here. The higher
     %  the better, but has a limit  --------- ???? find the optimal ?????
-    new_fs = 150000; 
+    new_fs = 100000; 
     input_audio = prepocess(input_audio, 0.0005, input_Fs, new_fs); % a function written to preprocess the sound
 
     % initialize the return matrix
     output = zeros(size(input_audio, 1), size(input_audio, 2)); 
+
+    freq = logspace(1,5,60); 
+%     Result of freq response
+    H = zeros(size(rl, 2), length(freq)); 
 
     % j is the number of bands we have
     for j = 1: size(rl, 2)
@@ -47,10 +51,11 @@ function [output,new_fs]  = freqSep(input, rl, cl, rh, ch, order, magnitude, typ
         temp = magnitude(j) .* temp; % time the magnitude
         output = output + temp;  % sum the result of each filter 
 
-%         sound(temp, new_fs);
-%         pause(2);
-%         clear sound;
-
+%         Plot individual band
+        H(j , : ) = filterFreqRes(  aLow,  bLow, aHigh ,bHigh , order(j), type(j), new_fs, freq, j);
     end
 
+% Plot the equalizer response all together
+        equalizerFreqRes(rl, cl, rh, ch, order, magnitude, type, new_fs, logspace(1,5,60));
+%         equalizerImpulseRes(rl, cl, rh, ch, order, magnitude, type, 0:1e-5:1e-3);
 end

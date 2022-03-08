@@ -10,35 +10,36 @@
 %       x: means passes through low and high
 % freq: a list of frequencies be passed
 % fs: the sample frequency
-%  the number of frequency seperation
 % 
 % returned value:
 % H: a result frequency response 
 
 
-function H = filterFreqRes(  aLow,  bLow, aHigh ,bHigh , order, type, fs, freq, j)
+function H = filterFreqRes(  aLow,  bLow, aHigh ,bHigh , order, type, freq)
     
     w = 2*pi.*freq; % frequencies in rad/s
     
     % initialize the output
-    H = zeros(1,length(freq));
+    H = zeros(length(rl),length(freq));
+    
 
-for f = 1:length(freq)
+
+        for f = 1:length(freq)
             
-    t = 0 : 1/fs : 30/freq(f); % time interval
+            t = 0 : 1/fs : 30/freq(f); % time interval
             freq_in = exp(1j*w(f).*t); % generate the input
             
             % frequency output
-            freq_out = filter_with_order(freq_in, aLow, bLow, aHigh, bHigh, order, type);
+            freq_out = filter_with_order(freq_in, aLow, bLow, aHigh, bHigh, order(j), type(j));
 
             % calculate the gain from steady state
             steady_state = int32(length(t)*3/4):length(t);
-            H(1, f) = mean(freq_out(steady_state)./freq_in(steady_state));  
-end
+            H = mean(freq_out(steady_state)./freq_in(steady_state));  
+        end
 
         % magnitude and phase of the gain
-        magnitude = abs(H);
-        phase = (angle(H)./ pi);
+        magnitude = abs(H(j, :));
+        phase = (angle(H(j, :))./ pi);
 
         % plot the magnitude and phase
         figure;

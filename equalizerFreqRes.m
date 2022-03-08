@@ -10,15 +10,15 @@
 %       h: means only passes through high
 %       x: means passes through low and high
 % freq: a list of frequencies be passed
+% fs: the sample frequency
 % 
 % returned value:
 % H: a complex double array, H(i) is the complex response of frequency in
 % freq(i)
 
-function H = equalizerFreqRes(rl, cl, rh, ch, order, magnitude, type, freq)
+function H = equalizerFreqRes(rl, cl, rh, ch, order, magnitude, type, fs, freq)
     
     w = 2*pi.*freq; % frequencies in rad/s
-    fs = 44.1e4; % sample frequency
     
     % initialize the output
     H = zeros(1,length(freq));
