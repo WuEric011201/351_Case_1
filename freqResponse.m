@@ -2,70 +2,64 @@
 % frequency seperator
 % 
 % parameter: 
-% idx: the index of frequency we wants to seperate out
-% r: resistance of the filter
-% c: capacitance of the filter
+% rl, rh: resistance of the filter (high and low)
+% cl, ch: capacitance of the filter (high and low)
 % order: times we pass the frequency
+% type: the type of the frequency (low, high, or band)
 % freq: a list of frequencies be passed
 % 
 % returned value:
-% freq: logspace(1,5,100)
-% H: a 1*100 complex double array, with corresponding frequency produced
-% by logspace(1,5,100);
+% H: a m*n complex double matrix, with corresponding frequency produced
+%       m: the number of filters
+%       n: the length of the freq array
 
-function H = freqResponse(idx, rl, cl, rh, ch, order, freq, fs)
+function H = freqResponse(rl, cl, rh, ch, order, type, freq)
     
-    taul = rl*cl; % time constant
-    tauh = rh*ch;
+
+    w = 2*pi.*freq; % frequencies in rad/s
+    fs = 44.1e4; % sample frequency
     
-    % coefficients for filter()
-    aLow = [1, ((1/fs)/taul)-1]; bLow = (1/fs)/taul; % low-pass coeff
-    aHigh = [1, ((1/fs)/tauh)-1]; bHigh = [1, -1]; % high-pass coeff
-
-    % define a range of freqency the bode plot wants to cover
-    w = 2*pi.*freq;
-    H = zeros(1,length(freq));
-
-    for i = 1:length(freq)
-        t = 0 : 1/fs : 30/freq(i); % time interval
-        freq_in = exp(1j*w(i).*t); % generate the input
+    % initialize the output
+    H = zeros(length(rl),length(freq));
+    
+    for j = 1: length(rl)
         
-        temp = freq_in;
-        
-        % calculate the frequency output
-        for j = 1:order
-            if (idx < 5)
-                % pass the low-pass if index is 1 to 4
-                temp = filter(bLow, aLow, temp);
-            end
-            if (idx > 1)
-                % pass the low-pass if index is 2 to 5
-                temp = filter(bHigh, aHigh, temp);
-            end
+        taul = rl(j)*cl(j); % time constant
+        tauh = rh(j)*ch(j);
+
+        % coefficients for filter()
+        aLow = [1, ((1/fs)/taul)-1]; bLow = (1/fs)/taul; % low-pass coeff
+        aHigh = [1, ((1/fs)/tauh)-1]; bHigh = [1, -1]; % high-pass coeff
+
+        for f = 1:length(freq)
+            
+            t = 0 : 1/fs : 30/freq(f); % time interval
+            freq_in = exp(1j*w(f).*t); % generate the input
+            
+            % frequency output
+            freq_out = filter_with_order(freq_in, aLow, bLow, aHigh, bHigh, order(j), type(j));
+
+            % calculate the gain from steady state
+            steady_state = int32(length(t)*3/4):length(t);
+            H(j, f) = mean(freq_out(steady_state)./freq_in(steady_state));
+            
         end
-        
-        % frequency output
-        freq_out = temp;
-        
-        % calculate the gain from steady state
-        steady_state = int32(length(t)*3/4):length(t);
-        H(i) = mean(freq_out(steady_state)./freq_in(steady_state));
-    end
-    
-    % magnitude and phase of the gain
-    magnitude = abs(H);
-    phase = (angle(H)./ pi);
-    
-    % plot the magnitude and phase
-    figure('name', sprintf('Frequency Separation No.%d', idx));
-    subplot(2,1,1);
-    semilogx(freq, magnitude);
-    title('magnitude v.s. frequency')
-    xlabel('frequency (Hz)'); ylabel('magnitude');
 
-    subplot(2,1,2)
-    semilogx(freq, phase);
-    title('phase (nomalized by /pi) v.s. frequency');
-    xlabel('frequency (Hz)'); ylabel('phase');
+        % magnitude and phase of the gain
+        magnitude = abs(H(j, :));
+        phase = (angle(H(j, :))./ pi);
+
+        % plot the magnitude and phase
+        figure('name', sprintf('Frequency Separation No.%d', j));
+        subplot(2,1,1);
+        semilogx(freq, magnitude);
+        title('magnitude v.s. frequency')
+        xlabel('frequency (Hz)'); ylabel('magnitude');
+
+        subplot(2,1,2)
+        semilogx(freq, phase);
+        title('phase (nomalized by /pi) v.s. frequency');
+        xlabel('frequency (Hz)'); ylabel('phase');
     
+    end
 end
