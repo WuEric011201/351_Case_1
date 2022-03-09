@@ -1,14 +1,14 @@
 %% Task 1 - process "Giant Steps" by John Coltrane and "Space Station" by Art Farmer
 
 % Set up the parameters
-c_l = [3.22E-6, 3.659E-6,  0.31e-6,  2.41e-7, 5.31e-7];    
+c_l = [3.22E-6, 0.859E-6,  0.61e-6,  2.41e-7, 5.31e-7];    
 r_l = [60, 60, 60, 60, 60];
-c_h = [3.32E-6, 7.22E-5, 5.659E-5,  5.11e-5, 5.81e-7];    
+c_h = [3.32E-6, 1.52E-5, 5.959E-6,  1.785e-6, 6.81e-7];    
 r_h = [60, 60, 60, 60, 60];
 
-order = [10, 10, 5, 3, 2];
+order = [10, 5, 5, 5, 5];
 
-magnitude_unity  = [1 2.5  0.3 0.4 0.8];
+magnitude_unity  = [1 0.78  0.5 0.75 0.652];
 magnitude_base_boost = [1 6.5 1.27 9.17 1];
 magnitude_treble_boost = [1 6.5 1.27 9.17 1];
 type = ['l', 'x', 'x' , 'x', 'h'];
@@ -20,7 +20,7 @@ type = ['l', 'x', 'x' , 'x', 'h'];
 
 % Process "Space Station"
 
-[output1_ss, new_fs_ss] = freqSep("Space Station - Treble Cut.wav", r_l, c_l, r_h, c_h, order, magnitude_unity,  type); 
+% [output1_ss, new_fs_ss] = freqSep("Space Station - Treble Cut.wav", r_l, c_l, r_h, c_h, order, magnitude_unity,  type); 
 
 
 sound(output1_gs, new_fs_gs);

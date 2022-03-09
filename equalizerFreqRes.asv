@@ -45,15 +45,13 @@ function H = equalizerFreqRes(rl, cl, rh, ch, order, magnitude, type, fs, freq)
             steady_state = int32(length(t)*3/4):length(t);
             % the actual gain of the steady state
             % the gain of certain frequency is the sum of gain*weight 
-            H(f) = H(f)+mean(abs(freq_out(steady_state))./abs(freq_in(steady_state)))*magnitude(j);
+            H(f) = H(f)+mean(abs(freq_out(steady_state)./freq_in(steady_state))*magnitude(j);
             
         end
     
     end
     
     magnitude = abs(H);
-%     m = max(magnitude); 
-%     m1 = min(magnitude); 
     phase = angle(H)./pi;
     
     % plot the magnitude and phase

@@ -22,13 +22,13 @@ function [output,new_fs]  = freqSep(input, rl, cl, rh, ch, order, magnitude, typ
 
     %  sampling frequency (last parameter) -------  can change here. The higher
     %  the better, but has a limit  --------- ???? find the optimal ?????
-    new_fs = 100000; 
+    new_fs = 150000; 
     input_audio = prepocess(input_audio, 0.0005, input_Fs, new_fs); % a function written to preprocess the sound
 
     % initialize the return matrix
     output = zeros(size(input_audio, 1), size(input_audio, 2)); 
 
-    freq = logspace(1,5, 60); 
+    freq = logspace(1,5, 100); 
 %     Result of freq response
     H = zeros(size(rl, 2), length(freq)); 
 
