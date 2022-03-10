@@ -55,6 +55,20 @@ function [output,new_fs]  = freqSep(input, rl, cl, rh, ch, order, magnitude, typ
         H(j , : ) = filterFreqRes(  aLow,  bLow, aHigh ,bHigh , order(j), type(j), new_fs, freq, j);
     end
 
+    H = abs(H);
+    H1 = sum(magnitude* H, 1); 
+    figure; 
+    hold on; 
+    for k = 1: size(rl, 2)
+        plot(freq, 20*log(H(k, : )* magnitude(k)), 'linewidth', 2);
+    end
+    plot(freq, 20* log(H1), 'linewidth', 2);
+    hold off; 
+    legend('Filter1', 'Filter2', 'Filter3', 'Filter4', 'Filter5', 'Equalizer')
+    set(gca, 'XScale', 'log'); 
+         title('Frequency reponse of the five individual bands and the overall response');
+        xlabel('Frequency (Hz)'); ylabel('Magnitude (dB)');
+
 % Plot the equalizer response all together
         equalizerFreqRes(rl, cl, rh, ch, order, magnitude, type, new_fs, logspace(1,5,60));
 %         equalizerImpulseRes(rl, cl, rh, ch, order, magnitude, type, 0:1e-5:1e-3);

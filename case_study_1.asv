@@ -9,8 +9,8 @@ r_h = [60, 60, 60, 60, 60];
 order = [10, 5, 5, 5, 5];
 
 magnitude_unity  = [1 0.78  0.4 0.77 0.652];
-magnitude_base_boost = [2 1.48  0.5 0.57 0.652];
-magnitude_treble_boost = [1 0.78  0.4 1.47 1.552];
+magnitude_base_boost = [2 1.78  0.4 0.77 0.652];
+magnitude_treble_boost = [1 0.78  0.4 1.77 1.652];
 type = ['l', 'x', 'x' , 'x', 'h'];
 
 
@@ -20,7 +20,7 @@ type = ['l', 'x', 'x' , 'x', 'h'];
 
 % Process "Space Station"
 
-[output1_ss, new_fs_ss] = freqSep("Space Station - Treble Cut.wav", r_l, c_l, r_h, c_h, order, magnitude_treble_boost,  type); 
+% [output1_ss, new_fs_ss] = freqSep("Space Station - Treble Cut.wav", r_l, c_l, r_h, c_h, order, magnitude_treble_boost,  type); 
 
 
 sound(output1_gs, new_fs_gs);
