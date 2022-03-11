@@ -59,12 +59,12 @@ function [output,new_fs]  = freqSep(input, rl, cl, rh, ch, order, magnitude, typ
     H1 = sum(magnitude* H, 1); 
     figure; 
     hold on; 
-    for k = 1: size(rl, 2)
-        plot(freq, 20*log(H(k, : )* magnitude(k)), 'linewidth', 2);
-    end
-    plot(freq, 20* log(H1), 'linewidth', 2);
+%     for k = 1: size(rl, 2)
+%         plot(freq, H(k, : )* magnitude(k), '--', 'linewidth', 2);
+%     end
+    plot(freq, H1, 'linewidth', 2);
     hold off; 
-    legend('Filter1', 'Filter2', 'Filter3', 'Filter4', 'Filter5', 'Equalizer')
+    legend('Equalizer')
     set(gca, 'XScale', 'log'); 
          title('Frequency reponse of the five individual bands and the overall response');
         xlabel('Frequency (Hz)'); ylabel('Magnitude (dB)');

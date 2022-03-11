@@ -9,14 +9,14 @@ r_h = [60, 60, 60, 60, 60];
 order = [10, 5, 5, 5, 5];
 
 magnitude_unity  = [1 0.78  0.4 0.77 0.652];
-magnitude_base_boost = [2 1.48  0.5 0.57 0.652];
+magnitude_base_boost = [2 1.38  0.45 0.57 0.652];
 magnitude_treble_boost = [1 0.78  0.4 1.47 1.552];
 type = ['l', 'x', 'x' , 'x', 'h'];
 
 
 % Process"Giant Steps"
 
-[output1_gs, new_fs_gs] = freqSep("Giant Steps Bass Cut.wav", r_l, c_l, r_h, c_h, order, magnitude_unity, type);
+[output1_gs, new_fs_gs] = freqSep("Giant Steps Bass Cut.wav", r_l, c_l, r_h, c_h, order, magnitude_base_boost, type);
 
 % Process "Space Station"
 
@@ -44,6 +44,7 @@ sound(output1_bg, new_fs_bg);
         clear sound;
 
 %% Task 3 Improve the ESE 351 class audio
+
 analyze('tro.mp4'); 
 
 % Set up the parameters
